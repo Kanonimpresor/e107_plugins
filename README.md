@@ -8,90 +8,90 @@
 
 ---
 
-Un plugin de reemplazo para el sistema de captcha de e107, utilizando Cloudflare Turnstile para hacer tu sitio más amigable y seguro.
+A replacement plugin for the e107 captcha system, using Cloudflare Turnstile to make your site more user-friendly and secure.
 
-## Descripción
+## Description
 
-Este plugin proporciona una alternativa moderna y fácil de usar al sistema de captcha tradicional de e107. Utiliza Cloudflare Turnstile, que ofrece una experiencia de usuario mejorada mientras mantiene la seguridad contra bots y spam.
+This plugin provides a modern and easy-to-use alternative to the traditional e107 captcha system. It uses Cloudflare Turnstile, which offers an improved user experience while maintaining security against bots and spam.
 
-## Características
+## Features
 
-- ✅ Reemplazo directo del sistema de captcha de e107
-- ✅ Interfaz de usuario más amigable
-- ✅ Integración con Cloudflare Turnstile
-- ✅ Configuración sencilla desde el panel de administración
-- ✅ Compatible con e107 v2.3+
+- ✅ Direct replacement for e107 captcha system
+- ✅ More user-friendly interface
+- ✅ Cloudflare Turnstile integration
+- ✅ Simple configuration from admin panel
+- ✅ Compatible with e107 v2.3+
 
-## Instalación
+## Installation
 
-1. Descarga el plugin desde este repositorio
-2. Extrae los archivos de la carpeta `turnstile/` en tu directorio `e107_plugins/turnstile/`
-3. Ve al panel de administración de e107
-4. Navega a **Plugins** y activa el plugin "Turnstile Captcha"
-5. Configura las claves de API en la sección de configuración
+1. Download the plugin from this repository
+2. Extract the files from the `turnstile/` folder to your `e107_plugins/turnstile/` directory
+3. Go to the e107 administration panel
+4. Navigate to **Plugins** and activate the "Turnstile Captcha" plugin
+5. Configure the API keys in the configuration section
 
-## Configuración
+## Configuration
 
-### Obtener las claves de Cloudflare Turnstile
+### Getting Cloudflare Turnstile Keys
 
-1. Ve a [Cloudflare Dashboard](https://dash.cloudflare.com/)
-2. Selecciona tu sitio web
-3. Ve a **Security** > **Turnstile**
-4. Crea un nuevo sitio y obtén:
-   - **Site Key** (Clave del sitio)
-   - **Secret Key** (Clave secreta)
+1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. Select your website
+3. Go to **Security** > **Turnstile**
+4. Create a new site and obtain:
+   - **Site Key** (Public site key)
+   - **Secret Key** (Private secret key)
 
-### Configurar el plugin
+### Configure the Plugin
 
-1. En el panel de administración de e107, ve a **Plugins** > **Turnstile Captcha**
-2. Haz clic en **Configurar**
-3. Introduce las claves obtenidas de Cloudflare:
-   - **Site Key**: Tu clave pública del sitio
-   - **Secret Key**: Tu clave secreta
-4. Guarda la configuración
+1. In the e107 admin panel, go to **Plugins** > **Turnstile Captcha**
+2. Click **Configure**
+3. Enter the keys obtained from Cloudflare:
+   - **Site Key**: Your public site key
+   - **Secret Key**: Your private secret key
+4. Save the configuration
 
-## Estructura de archivos
+## File Structure
 
 ```
 turnstile/
-├── admin_config.php          # Panel de configuración del administrador
-├── e_cloudflare_zone.php     # Funciones de zona de Cloudflare
-├── e_domain_check.php        # Verificación de dominio
-├── e_header.php              # Scripts de cabecera
-├── e_module.php              # Módulo principal del plugin
-├── images/                   # Iconos del plugin
+├── admin_config.php          # Administrator configuration panel
+├── e_cloudflare_zone.php     # Cloudflare zone functions
+├── e_domain_check.php        # Domain verification
+├── e_header.php              # Header scripts
+├── e_module.php              # Main plugin module
+├── images/                   # Plugin icons
 │   ├── _icon_16.png
 │   ├── _icon_32.png
 │   ├── _icon_64.png
 │   └── _icon_128.png
-├── plugin.xml               # Configuración del plugin
-├── .gitignore               # Archivos ignorados por Git
-└── README.md                # Este archivo
+├── plugin.xml               # Plugin configuration
+├── .gitignore               # Git ignored files
+└── README.md                # This file
 ```
 
-## Requisitos
+## Requirements
 
-- e107 CMS v2.3 o superior
-- PHP 7.0 o superior
-- Cuenta de Cloudflare (gratuita disponible)
+- e107 CMS v2.3 or higher
+- PHP 7.0 or higher
+- Cloudflare account (free available)
 
-## Autor
+## Author
 
 **Jimako**  
 Website: [https://www.e107sk.com/](https://www.e107sk.com/)
 
-## Licencia
+## License
 
-Este plugin está licenciado bajo los términos de la GNU General Public License.
+This plugin is licensed under the terms of the GNU General Public License.
 
-## Soporte
+## Support
 
-Para reportar problemas o solicitar características, por favor visita el repositorio del proyecto en GitHub.
+To report issues or request features, please visit the project repository on GitHub.
 
 ## Changelog
 
 ### v1.0.1 (2025-09-25)
-- Versión inicial del plugin
-- Integración básica con Cloudflare Turnstile
-- Panel de configuración del administrador
-- Compatibilidad con e107 v2.3+
+- Initial plugin version
+- Basic Cloudflare Turnstile integration
+- Administrator configuration panel
+- Compatibility with e107 v2.3+
