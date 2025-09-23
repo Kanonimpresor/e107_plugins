@@ -50,6 +50,42 @@ This plugin provides a modern and easy-to-use alternative to the traditional e10
    - **Secret Key**: Your private secret key
 4. Save the configuration
 
+## Diagnostic Tool
+
+This plugin includes a diagnostic tool to help identify configuration issues and verify proper Cloudflare integration.
+
+### Using the Diagnostic Tool
+
+1. Copy the file `e107_add/diagnose_turnstile.php` to your e107 root directory
+2. Access the diagnostic tool via your browser: `https://your-domain.com/diagnose_turnstile.php`
+3. The tool will perform the following checks:
+   - **Cloudflare Zone Detection**: Verifies if your domain is properly configured in Cloudflare
+   - **Plugin Configuration**: Checks if Turnstile keys are properly configured in e107
+   - **API Connectivity**: Tests connection to Cloudflare Turnstile API
+   - **Server Information**: Displays relevant server and domain information
+
+### Diagnostic Features
+
+- ✅ **Cloudflare Zone Detection**: Automatically detects if your domain is behind Cloudflare
+- ✅ **Configuration Validation**: Verifies Site Key and Secret Key format and presence
+- ✅ **API Connectivity Test**: Tests connection to Cloudflare Turnstile services
+- ✅ **Detailed Recommendations**: Provides specific solutions for detected issues
+- ✅ **Real-time Analysis**: Updates information on each page refresh
+
+### Common Issues and Solutions
+
+**Error: "Cannot determine Turnstile's embedded location"**
+- **Cause**: Domain is not configured in Cloudflare
+- **Solution**: Add your domain to Cloudflare and update nameservers
+
+**Turnstile not displaying**
+- **Cause**: Incorrect Site Key or domain not in allowed list
+- **Solution**: Verify Site Key and add domain to Turnstile configuration in Cloudflare Dashboard
+
+### Security Note
+
+⚠️ **Important**: Remove the diagnostic file from your production server after troubleshooting to maintain security.
+
 ## File Structure
 
 ```

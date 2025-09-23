@@ -50,6 +50,42 @@ Este plugin fornece uma alternativa moderna e fácil de usar ao sistema de captc
    - **Secret Key**: A sua chave secreta
 4. Guarde a configuração
 
+## Ferramenta de Diagnóstico
+
+Este plugin inclui uma ferramenta de diagnóstico para ajudar a identificar problemas de configuração e verificar a integração adequada com o Cloudflare.
+
+### Usar a Ferramenta de Diagnóstico
+
+1. Copie o ficheiro `e107_add/diagnose_turnstile.php` para o diretório raiz do e107
+2. Aceda à ferramenta de diagnóstico através do seu navegador: `https://seu-dominio.com/diagnose_turnstile.php`
+3. A ferramenta realizará as seguintes verificações:
+   - **Deteção de Zona Cloudflare**: Verifica se o seu domínio está configurado corretamente no Cloudflare
+   - **Configuração do Plugin**: Verifica se as chaves Turnstile estão configuradas corretamente no e107
+   - **Conectividade da API**: Testa a ligação à API Turnstile do Cloudflare
+   - **Informações do Servidor**: Exibe informações relevantes do servidor e domínio
+
+### Funcionalidades do Diagnóstico
+
+- ✅ **Deteção de Zona Cloudflare**: Deteta automaticamente se o seu domínio está por trás do Cloudflare
+- ✅ **Validação de Configuração**: Verifica o formato e presença da Site Key e Secret Key
+- ✅ **Teste de Conectividade da API**: Testa a ligação aos serviços Turnstile do Cloudflare
+- ✅ **Recomendações Detalhadas**: Fornece soluções específicas para problemas detetados
+- ✅ **Análise em Tempo Real**: Atualiza informações a cada atualização da página
+
+### Problemas Comuns e Soluções
+
+**Erro: "Cannot determine Turnstile's embedded location"**
+- **Causa**: O domínio não está configurado no Cloudflare
+- **Solução**: Adicione o seu domínio ao Cloudflare e atualize os nameservers
+
+**Turnstile não aparece**
+- **Causa**: Site Key incorreta ou domínio não está na lista permitida
+- **Solução**: Verifique a Site Key e adicione o domínio à configuração Turnstile no Painel Cloudflare
+
+### Nota de Segurança
+
+⚠️ **Importante**: Remova o ficheiro de diagnóstico do seu servidor de produção após a resolução de problemas para manter a segurança.
+
 ## Estrutura de ficheiros
 
 ```

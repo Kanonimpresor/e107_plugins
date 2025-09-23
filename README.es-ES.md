@@ -50,6 +50,42 @@ Este plugin proporciona una alternativa moderna y fácil de usar al sistema de c
    - **Secret Key**: Tu clave secreta
 4. Guarda la configuración
 
+## Herramienta de Diagnóstico
+
+Este plugin incluye una herramienta de diagnóstico para ayudar a identificar problemas de configuración y verificar la integración adecuada con Cloudflare.
+
+### Usar la Herramienta de Diagnóstico
+
+1. Copia el archivo `e107_add/diagnose_turnstile.php` al directorio raíz de e107
+2. Accede a la herramienta de diagnóstico a través de tu navegador: `https://tu-dominio.com/diagnose_turnstile.php`
+3. La herramienta realizará las siguientes verificaciones:
+   - **Detección de Zona Cloudflare**: Verifica si tu dominio está configurado correctamente en Cloudflare
+   - **Configuración del Plugin**: Verifica si las claves Turnstile están configuradas correctamente en e107
+   - **Conectividad de API**: Prueba la conexión a la API Turnstile de Cloudflare
+   - **Información del Servidor**: Muestra información relevante del servidor y dominio
+
+### Características del Diagnóstico
+
+- ✅ **Detección de Zona Cloudflare**: Detecta automáticamente si tu dominio está detrás de Cloudflare
+- ✅ **Validación de Configuración**: Verifica el formato y presencia de Site Key y Secret Key
+- ✅ **Prueba de Conectividad de API**: Prueba la conexión a los servicios Turnstile de Cloudflare
+- ✅ **Recomendaciones Detalladas**: Proporciona soluciones específicas para problemas detectados
+- ✅ **Análisis en Tiempo Real**: Actualiza información en cada actualización de página
+
+### Problemas Comunes y Soluciones
+
+**Error: "Cannot determine Turnstile's embedded location"**
+- **Causa**: El dominio no está configurado en Cloudflare
+- **Solución**: Agrega tu dominio a Cloudflare y actualiza los nameservers
+
+**Turnstile no se muestra**
+- **Causa**: Site Key incorrecta o dominio no está en la lista permitida
+- **Solución**: Verifica la Site Key y agrega el dominio a la configuración Turnstile en el Panel de Cloudflare
+
+### Nota de Seguridad
+
+⚠️ **Importante**: Elimina el archivo de diagnóstico de tu servidor de producción después de solucionar problemas para mantener la seguridad.
+
 ## Estructura de archivos
 
 ```
