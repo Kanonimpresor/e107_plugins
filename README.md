@@ -1,78 +1,63 @@
 # e107 Plugins Collection
 
-A collection of plugins for the e107 Content Management System.
+This repository contains a collection of plugins for the e107 Content Management System.
 
 ## Available Plugins
 
 ### ��� Turnstile Captcha Plugin
-**Location:** `turnstile/`
-
-A modern replacement for the e107 captcha system using Cloudflare Turnstile technology.
+A modern CAPTCHA solution using Cloudflare Turnstile technology for e107 CMS.
 
 **Features:**
-- ✅ Direct replacement for e107 captcha system
-- ✅ More user-friendly interface than traditional captcha
-- ✅ Cloudflare Turnstile integration
-- ✅ Simple configuration from admin panel
-- ✅ Compatible with e107 v2.3+
-- ✅ Includes diagnostic tool for troubleshooting
+- Cloudflare Turnstile integration
+- Multi-language support (English, Spanish, Portuguese)
+- Advanced configuration options
+- Domain validation
+- Diagnostic tools included
 
 **Documentation:**
-- [English](turnstile/README.md)
-- [Português](turnstile/README.pt-PT.md)
-- [Español](turnstile/README.es-ES.md)
-
----
+- [English Documentation](turnstile/README.md)
+- [Documentación en Español](turnstile/README.es-ES.md)
+- [Documentação em Português](turnstile/README.pt-PT.md)
 
 ## Installation
 
-Each plugin has its own installation instructions. Please refer to the individual plugin documentation for specific installation steps.
+1. Download the desired plugin from its respective folder
+2. Upload to your e107 `e107_plugins/` directory
+3. Install through e107 Admin Panel → Plugin Manager
 
 ## Requirements
 
-- e107 CMS v2.3 or higher
-- PHP 7.0 or higher
-- Web server (Apache/Nginx)
+- e107 CMS v2.x or higher
+- PHP 7.4 or higher
+- Active internet connection (for Cloudflare services)
 
 ## Contributing
 
-If you'd like to contribute to any of these plugins:
-
+Contributions are welcome! Please:
 1. Fork this repository
 2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+3. Submit a pull request
 
 ## Support
 
-For support with any plugin, please:
-
-1. Check the plugin's individual documentation
-2. Use the diagnostic tools (if available)
-3. Create an issue in this repository
+For plugin-specific support, please refer to the individual plugin documentation.
 
 ## License
 
-Each plugin may have its own license. Please check the individual plugin directories for license information.
+Each plugin may have its own license. Please check individual plugin directories for license information.
+
+## Repository Structure
+
+```
+e107_plugins/
+├── README.md                    # This file
+├── turnstile/                   # Turnstile Captcha Plugin
+│   ├── README.md               # Plugin documentation
+│   ├── plugin.xml              # Plugin configuration
+│   └── [plugin files]
+└── [future plugins]/           # Additional plugins will be added here
+```
 
 ---
 
-**Repository Structure:**
-```
-e107_plugins/
-├── README.md                 # This file
-├── turnstile/               # Turnstile Captcha Plugin
-│   ├── README.md           # English documentation
-│   ├── README.pt-PT.md     # Portuguese documentation
-│   ├── README.es-ES.md     # Spanish documentation
-│   ├── plugin.xml          # Plugin configuration
-│   ├── admin_config.php    # Admin configuration
-│   ├── e107_add/          # Additional files
-│   │   └── diagnose_turnstile.php
-│   └── ...                # Other plugin files
-└── [future_plugins]/       # Additional plugins will be added here
-```
-
-## Future Plugins
-
-This repository will be expanded with additional e107 plugins. Each plugin will maintain its own directory structure and documentation.
+**Note:** This is a multi-plugin repository. Each plugin is contained in its own directory with complete documentation and installation instructions.
