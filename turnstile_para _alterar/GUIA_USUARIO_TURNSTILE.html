@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Guía Completa del Plugin Turnstile CAPTCHA para e107</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav {
+            background: #34495e;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            background: #3498db;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 80px;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #3498db;
+            position: relative;
+        }
+
+        .section h2::before {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: #e74c3c;
+        }
+
+        .section h3 {
+            color: #34495e;
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .section h4 {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .error-box {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .feature-card h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            background: #4a5568;
+            color: #a0aec0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            position: relative;
+            padding-left: 2rem;
+            margin: 0.5rem 0;
+        }
+
+        .checklist li::before {
+            content: '✅';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 3rem;
+            margin: 1rem 0;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #3498db;
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #3498db;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .nav ul {
+                flex-direction: column;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .emoji {
+            font-size: 1.2em;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><span class="emoji">🛡️</span> Guía Completa del Plugin Turnstile CAPTCHA para e107</h1>
+            <p>Protección avanzada contra bots con la mejor experiencia de usuario</p>
+        </header>
+
+        <nav class="nav">
+            <ul>
+                <li><a href="#introduccion">Introducción</a></li>
+                <li><a href="#caracteristicas">Características</a></li>
+                <li><a href="#requisitos">Requisitos</a></li>
+                <li><a href="#instalacion">Instalación</a></li>
+                <li><a href="#configuracion">Configuración</a></li>
+                <li><a href="#panel-admin">Panel Admin</a></li>
+                <li><a href="#frontend">Frontend</a></li>
+                <li><a href="#estadisticas">Estadísticas</a></li>
+                <li><a href="#logs">Logs</a></li>
+                <li><a href="#problemas">Problemas</a></li>
+                <li><a href="#api">API</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="introduccion" class="section">
+                <h2><span class="emoji">🔰</span> Introducción</h2>
+                
+                <div class="highlight-box">
+                    <p>El <strong>Plugin Turnstile CAPTCHA</strong> es una solución de seguridad avanzada para e107 que reemplaza el sistema CAPTCHA tradicional con la tecnología moderna de <strong>Cloudflare Turnstile</strong>. Este plugin ofrece una experiencia más amigable para el usuario mientras mantiene altos niveles de seguridad contra bots y ataques automatizados.</p>
+                </div>
+
+                <h3>¿Qué es Cloudflare Turnstile?</h3>
+                <p>Cloudflare Turnstile es una alternativa moderna a reCAPTCHA que:</p>
+                <ul class="checklist">
+                    <li><strong>No requiere interacción del usuario</strong> en la mayoría de casos</li>
+                    <li><strong>Respeta la privacidad</strong> del usuario</li>
+                    <li><strong>Es más rápido</strong> y eficiente</li>
+                    <li><strong>Funciona sin cookies</strong> de terceros</li>
+                    <li><strong>Es gratuito</strong> para uso básico</li>
+                </ul>
+            </section>
+
+            <section id="caracteristicas" class="section">
+                <h2><span class="emoji">✨</span> Características</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><span class="emoji">🔐</span> Seguridad Avanzada</h4>
+                        <ul class="checklist">
+                            <li>Protección contra bots y ataques automatizados</li>
+                            <li>Rate limiting inteligente con bloqueo automático de IPs</li>
+                            <li>Monitoreo en tiempo real de intentos de verificación</li>
+                            <li>Logs detallados de seguridad</li>
+                            <li>Integración completa con el sistema de logs de e107</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">🎨</span> Personalización</h4>
+                        <ul class="checklist">
+                            <li>Temas: Claro, Oscuro, Automático</li>
+                            <li>Tamaños: Normal, Compacto</li>
+                            <li>Ocultación automática para miembros registrados</li>
+                            <li>Configuración flexible por formulario</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">📊</span> Monitoreo y Estadísticas</h4>
+                        <ul class="checklist">
+                            <li>Dashboard con estadísticas en tiempo real</li>
+                            <li>Gráficos de intentos exitosos vs fallidos</li>
+                            <li>Lista de IPs bloqueadas</li>
+                            <li>Historial de actividad detallado</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">🔧</span> Administración</h4>
+                        <ul class="checklist">
+                            <li>Panel de administración intuitivo</li>
+                            <li>Configuración de prueba integrada</li>
+                            <li>Gestión de bloqueos de IP</li>
+                            <li>Exportación de logs y estadísticas</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="requisitos" class="section">
+                <h2><span class="emoji">🖥️</span> Requisitos del Sistema</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Requisitos Mínimos</h4>
+                        <ul>
+                            <li><strong>e107 CMS</strong>: Versión 2.3.0 o superior</li>
+                            <li><strong>PHP</strong>: Versión 7.4 o superior</li>
+                            <li><strong>MySQL</strong>: Versión 5.7 o superior</li>
+                            <li><strong>Extensiones PHP</strong>: cURL, JSON, OpenSSL</li>
+                            <li><strong>Permisos</strong>: Administrador de plugins (P)</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>Requisitos Recomendados</h4>
+                        <ul>
+                            <li><strong>PHP</strong>: Versión 8.0 o superior</li>
+                            <li><strong>MySQL</strong>: Versión 8.0 o superior</li>
+                            <li><strong>Memoria PHP</strong>: 128MB o más</li>
+                            <li><strong>Conexión HTTPS</strong>: Recomendada para máxima seguridad</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>Cuenta de Cloudflare</h4>
+                    <ul>
+                        <li>Cuenta gratuita en <a href="https://www.cloudflare.com/" target="_blank">Cloudflare</a></li>
+                        <li>Sitio web registrado en Cloudflare Turnstile</li>
+                        <li>Site Key y Secret Key generadas</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="instalacion" class="section">
+                <h2><span class="emoji">📦</span> Instalación</h2>
+
+                <h3>Paso 1: Obtener las Claves de Turnstile</h3>
+                <ol class="step-list">
+                    <li>
+                        <strong>Crear cuenta en Cloudflare</strong> (si no tienes una):
+                        <ul>
+                            <li>Visita <a href="https://www.cloudflare.com/" target="_blank">https://www.cloudflare.com/</a></li>
+                            <li>Regístrate con tu email</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Acceder a Turnstile</strong>:
+                        <ul>
+                            <li>Inicia sesión en tu dashboard de Cloudflare</li>
+                            <li>Ve a la sección <strong>"Turnstile"</strong></li>
+                            <li>Haz clic en <strong>"Add Site"</strong></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Configurar tu sitio</strong>:
+                        <ul>
+                            <li><strong>Site Name</strong>: Nombre descriptivo (ej: "Mi Sitio e107")</li>
+                            <li><strong>Domain</strong>: Tu dominio (ej: <code>midominio.com</code>)</li>
+                            <li><strong>Widget Mode</strong>: Selecciona "Managed" (recomendado)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Obtener las claves</strong>:
+                        <ul>
+                            <li><strong>Site Key</strong>: Clave pública (comienza con <code>0x4AAA...</code>)</li>
+                            <li><strong>Secret Key</strong>: Clave privada (comienza con <code>0x4AAA...</code>)</li>
+                        </ul>
+                        <div class="warning-box">
+                            <strong>⚠️ Importante:</strong> Guarda estas claves de forma segura
+                        </div>
+                    </li>
+                </ol>
+
+                <h3>Paso 2: Instalar el Plugin</h3>
+                <ol class="step-list">
+                    <li>
+                        <strong>Descargar el plugin</strong>:
+                        <ul>
+                            <li>Descarga el archivo <code>turnstile.zip</code></li>
+                            <li>Extrae el contenido</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Subir archivos</strong>:
+                        <div class="code-block" data-lang="structure">
+/e107_plugins/turnstile/
+├── admin_config.php
+├── e_header.php
+├── e_module.php
+├── plugin.xml
+├── turnstile_setup.php
+├── turnstile_sql.php
+├── images/
+└── languages/
+                        </div>
+                    </li>
+                    <li>
+                        <strong>Instalar desde el panel de administración</strong>:
+                        <ul>
+                            <li>Ve a <strong>Admin → Plugins → Plugin Manager</strong></li>
+                            <li>Busca "Turnstile Captcha"</li>
+                            <li>Haz clic en <strong>"Install"</strong></li>
+                            <li>Confirma la instalación</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>Paso 3: Verificar la Instalación</h3>
+                <div class="success-box">
+                    <p>El plugin creará automáticamente <strong>3 tablas</strong> en la base de datos:</p>
+                    <ol>
+                        <li><strong><code>e107_turnstile_attempts</code></strong>: Registra intentos de verificación</li>
+                        <li><strong><code>e107_turnstile_config</code></strong>: Almacena configuración del plugin</li>
+                        <li><strong><code>e107_turnstile_blocks</code></strong>: Gestiona bloqueos de IP</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="configuracion" class="section">
+                <h2><span class="emoji">⚙️</span> Configuración Inicial</h2>
+
+                <h3>Acceder al Panel de Configuración</h3>
+                <ol class="step-list">
+                    <li>Ve a <strong>Admin → Plugins → Turnstile Captcha</strong></li>
+                    <li>Haz clic en <strong>"Configure"</strong></li>
+                </ol>
+
+                <h3>Configuración Básica</h3>
+
+                <h4><span class="emoji">🔑</span> Claves de API</h4>
+                <ul>
+                    <li><strong>Site Key</strong>: Pega tu clave pública de Cloudflare</li>
+                    <li><strong>Secret Key</strong>: Pega tu clave privada de Cloudflare</li>
+                </ul>
+                <div class="warning-box">
+                    <strong>⚠️ Importante:</strong> Verifica que las claves sean correctas
+                </div>
+
+                <h4><span class="emoji">🎨</span> Apariencia</h4>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Opción</th>
+                                <th>Valores</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Theme</strong></td>
+                                <td>Light / Dark / Auto</td>
+                                <td>
+                                    <ul>
+                                        <li><code>Light</code>: Tema claro (recomendado para sitios claros)</li>
+                                        <li><code>Dark</code>: Tema oscuro (recomendado para sitios oscuros)</li>
+                                        <li><code>Auto</code>: Se adapta automáticamente al tema del navegador</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Size</strong></td>
+                                <td>Normal / Compact</td>
+                                <td>
+                                    <ul>
+                                        <li><code>Normal</code>: Tamaño estándar (recomendado)</li>
+                                        <li><code>Compact</code>: Tamaño reducido (para espacios limitados)</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4><span class="emoji">👥</span> Comportamiento</h4>
+                <ul>
+                    <li><strong>Enable Turnstile</strong>: Activa/desactiva el plugin</li>
+                    <li><strong>Hide for Members</strong>: Oculta CAPTCHA para usuarios registrados</li>
+                </ul>
+
+                <h3>Configuración de Prueba</h3>
+                <ol class="step-list">
+                    <li>Haz clic en <strong>"Test Configuration"</strong></li>
+                    <li>Verifica que aparezca: <span class="highlight">✅ "Configuration is valid and working properly"</span></li>
+                    <li>Si hay errores, revisa las claves y la conectividad</li>
+                </ol>
+            </section>
+
+            <section id="panel-admin" class="section">
+                <h2><span class="emoji">🎛️</span> Panel de Administración</h2>
+
+                <h3>Menú Principal</h3>
+                <p>El panel de administración incluye 4 secciones principales:</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><span class="emoji">📋</span> Configuration</h4>
+                        <ul>
+                            <li>Configuración general del plugin</li>
+                            <li>Claves de API</li>
+                            <li>Opciones de apariencia</li>
+                            <li>Configuración de seguridad</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">📊</span> Statistics</h4>
+                        <ul>
+                            <li>Total de intentos de verificación</li>
+                            <li>Intentos exitosos vs fallidos</li>
+                            <li>IPs bloqueadas actualmente</li>
+                            <li>Gráficos de actividad</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">🔒</span> Security Logs</h4>
+                        <ul>
+                            <li>Historial detallado de eventos</li>
+                            <li>Intentos de verificación</li>
+                            <li>Bloqueos de IP</li>
+                            <li>Errores del sistema</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">🧪</span> Test Configuration</h4>
+                        <ul>
+                            <li>Verificación de conectividad</li>
+                            <li>Validación de claves</li>
+                            <li>Prueba de funcionalidad</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Dashboard de Estadísticas</h3>
+                <p>El dashboard muestra métricas en tiempo real:</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">1,234</span>
+                        <span class="stat-label">Total Attempts</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">1,180</span>
+                        <span class="stat-label">Successful</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">54</span>
+                        <span class="stat-label">Failed</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">Blocked IPs</span>
+                    </div>
+                </div>
+
+                <h4>Métricas Disponibles:</h4>
+                <ul>
+                    <li><strong>Total Attempts</strong>: Número total de verificaciones</li>
+                    <li><strong>Successful</strong>: Verificaciones exitosas</li>
+                    <li><strong>Failed</strong>: Verificaciones fallidas</li>
+                    <li><strong>Blocked IPs</strong>: IPs actualmente bloqueadas</li>
+                    <li><strong>Success Rate</strong>: Porcentaje de éxito</li>
+                    <li><strong>Activity Timeline</strong>: Actividad por horas/días</li>
+                </ul>
+            </section>
+
+            <section id="frontend" class="section">
+                <h2><span class="emoji">🌐</span> Uso en Frontend</h2>
+
+                <h3>Integración Automática</h3>
+                <p>El plugin se integra automáticamente con:</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Formularios de e107:</h4>
+                        <ul class="checklist">
+                            <li><strong>Registro de usuarios</strong></li>
+                            <li><strong>Inicio de sesión</strong></li>
+                            <li><strong>Contacto</strong></li>
+                            <li><strong>Comentarios</strong></li>
+                            <li><strong>Envío de noticias</strong></li>
+                            <li><strong>Formularios personalizados</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Implementación Manual</h3>
+                <p>Para integrar Turnstile en formularios personalizados:</p>
+
+                <h4>PHP:</h4>
+                <div class="code-block" data-lang="php">
+// Mostrar el widget
+$turnstile = e107::getObject('e107turnstile');
+echo $turnstile->input();
+
+// Verificar la respuesta
+if ($_POST['cf-turnstile-response']) {
+    if ($turnstile->verify()) {
+        // Verificación exitosa
+        echo "¡CAPTCHA verificado correctamente!";
+    } else {
+        // Verificación fallida
+        echo $turnstile->invalid();
+    }
+}
+                </div>
+
+                <h4>HTML/Template:</h4>
+                <div class="code-block" data-lang="html">
+<!-- Widget de Turnstile -->
+<div class="turnstile-widget">
+    {TURNSTILE_INPUT}
+</div>
+
+<!-- Mensaje de error (si es necesario) -->
+<div class="turnstile-error">
+    {TURNSTILE_ERROR}
+</div>
+                </div>
+
+                <h3>Shortcodes Disponibles</h3>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Shortcode</th>
+                                <th>Descripción</th>
+                                <th>Ejemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>{TURNSTILE}</code></td>
+                                <td>Widget básico</td>
+                                <td><code>{TURNSTILE}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>{TURNSTILE=theme,size}</code></td>
+                                <td>Widget personalizado</td>
+                                <td>
+                                    <code>{TURNSTILE=dark,compact}</code><br>
+                                    <code>{TURNSTILE=light,normal}</code><br>
+                                    <code>{TURNSTILE=auto,compact}</code>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>CSS Personalizado</h3>
+                <div class="code-block" data-lang="css">
+/* Contenedor del widget */
+.cf-turnstile {
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* Mensaje de error */
+.turnstile-error {
+    color: #d32f2f;
+    background: #ffebee;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+/* Mensaje de éxito */
+.turnstile-success {
+    color: #388e3c;
+    background: #e8f5e8;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+                </div>
+            </section>
+
+            <section id="estadisticas" class="section">
+                <h2><span class="emoji">📊</span> Estadísticas y Monitoreo</h2>
+
+                <h3>Dashboard Principal</h3>
+                <p>El dashboard proporciona una vista general de la actividad con métricas clave y gráficos disponibles para análisis detallado.</p>
+
+                <h3>Exportación de Datos</h3>
+                <h4>Exportar Estadísticas:</h4>
+                <ol class="step-list">
+                    <li>Ve a <strong>Statistics</strong></li>
+                    <li>Haz clic en <strong>"Export Data"</strong></li>
+                    <li>Selecciona el formato: CSV, JSON, XML</li>
+                    <li>Elige el rango de fechas</li>
+                    <li>Descarga el archivo</li>
+                </ol>
+
+                <h4>Formato CSV:</h4>
+                <div class="code-block" data-lang="csv">
+Date,Total_Attempts,Successful,Failed,Blocked_IPs
+2024-01-01,150,145,5,1
+2024-01-02,200,190,10,2
+                </div>
+
+                <h4>Formato JSON:</h4>
+                <div class="code-block" data-lang="json">
+{
+  "period": "2024-01-01 to 2024-01-31",
+  "summary": {
+    "total_attempts": 4500,
+    "successful": 4200,
+    "failed": 300,
+    "blocked_ips": 15
+  },
+  "daily_stats": [...]
+}
+                </div>
+            </section>
+
+            <section id="logs" class="section">
+                <h2><span class="emoji">🔍</span> Logs de Seguridad</h2>
+
+                <h3>Tipos de Eventos Registrados</h3>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><span class="emoji">✅</span> Verificaciones Exitosas</h4>
+                        <div class="code-block" data-lang="log">
+[2024-01-15 10:30:45] [INFO] TURNSTILE_SUCCESS
+IP: 192.168.1.100 | User: john_doe | Token verified successfully
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">⚠️</span> Verificaciones Fallidas</h4>
+                        <div class="code-block" data-lang="log">
+[2024-01-15 10:31:20] [WARNING] TURNSTILE_FAILED
+IP: 192.168.1.200 | Reason: Invalid token format
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">🚫</span> Bloqueos de IP</h4>
+                        <div class="code-block" data-lang="log">
+[2024-01-15 10:32:00] [ERROR] TURNSTILE_BLOCKED
+IP: 192.168.1.200 | Reason: Rate limit exceeded (5 attempts in 300s)
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">❌</span> Errores del Sistema</h4>
+                        <div class="code-block" data-lang="log">
+[2024-01-15 10:33:15] [ERROR] TURNSTILE_ERROR
+Error: Failed to connect to Cloudflare API | Code: CURL_ERROR_28
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Filtros de Logs</h3>
+                <ul>
+                    <li><strong>Por Tipo de Evento</strong>: Exitosas, Fallidas, Bloqueos, Errores</li>
+                    <li><strong>Por Rango de Fechas</strong>: Última hora, 24 horas, semana, mes, personalizado</li>
+                    <li><strong>Por Dirección IP</strong>: IP específica, rango de IPs, IPs bloqueadas</li>
+                </ul>
+
+                <h3>Alertas Automáticas</h3>
+                <h4>Configurar Alertas por Email:</h4>
+                <ol class="step-list">
+                    <li>Ve a <strong>Security Logs</strong></li>
+                    <li>Haz clic en <strong>"Alert Settings"</strong></li>
+                    <li>Configura los criterios de alerta</li>
+                    <li>Añade direcciones de email</li>
+                    <li>Guarda la configuración</li>
+                </ol>
+
+                <h4>Tipos de Alertas:</h4>
+                <ul>
+                    <li><strong>Rate Limit Exceeded</strong>: Cuando una IP supera el límite</li>
+                    <li><strong>API Error</strong>: Problemas de conectividad con Cloudflare</li>
+                    <li><strong>High Failure Rate</strong>: Tasa de fallos superior al 10%</li>
+                    <li><strong>Suspicious Activity</strong>: Patrones de comportamiento anómalos</li>
+                </ul>
+            </section>
+
+            <section id="problemas" class="section">
+                <h2><span class="emoji">🔧</span> Solución de Problemas</h2>
+
+                <h3>Problemas Comunes</h3>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><span class="emoji">🔑</span> "Invalid Site Key" o "Invalid Secret Key"</h4>
+                        <p><strong>Síntomas:</strong></p>
+                        <ul>
+                            <li>El widget no se muestra</li>
+                            <li>Error en la consola del navegador</li>
+                            <li>Mensaje de configuración inválida</li>
+                        </ul>
+                        <p><strong>Soluciones:</strong></p>
+                        <ol>
+                            <li>Verifica que las claves sean correctas</li>
+                            <li>Asegúrate de que el dominio esté registrado en Cloudflare</li>
+                            <li>Comprueba que las claves correspondan al dominio correcto</li>
+                            <li>Regenera las claves si es necesario</li>
+                        </ol>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">🤖</span> "You did not pass robot test"</h4>
+                        <p><strong>Síntomas:</strong></p>
+                        <ul>
+                            <li>El mensaje aparece incluso con verificación correcta</li>
+                            <li>Formularios no se envían</li>
+                        </ul>
+                        <p><strong>Soluciones:</strong></p>
+                        <ol>
+                            <li>Verifica la conectividad con la API de Cloudflare</li>
+                            <li>Comprueba los logs de seguridad</li>
+                            <li>Revisa la configuración de rate limiting</li>
+                            <li>Asegúrate de que el servidor tenga acceso a internet</li>
+                        </ol>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">👻</span> Widget no se muestra</h4>
+                        <p><strong>Síntomas:</strong></p>
+                        <ul>
+                            <li>Espacio en blanco donde debería estar el CAPTCHA</li>
+                            <li>Error de JavaScript en la consola</li>
+                        </ul>
+                        <p><strong>Soluciones:</strong></p>
+                        <ol>
+                            <li>Verifica que JavaScript esté habilitado</li>
+                            <li>Comprueba que no haya bloqueadores de anuncios</li>
+                            <li>Asegúrate de que el script de Cloudflare se cargue</li>
+                            <li>Revisa la configuración de CSP</li>
+                        </ol>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><span class="emoji">🚫</span> Bloqueos Excesivos de IP</h4>
+                        <p><strong>Síntomas:</strong></p>
+                        <ul>
+                            <li>Usuarios legítimos son bloqueados</li>
+                            <li>Muchas quejas de acceso denegado</li>
+                        </ul>
+                        <p><strong>Soluciones:</strong></p>
+                        <ol>
+                            <li>Ajusta la configuración de rate limiting</li>
+                            <li>Aumenta el número máximo de intentos</li>
+                            <li>Reduce la duración del bloqueo</li>
+                            <li>Revisa la lista de IPs bloqueadas</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <h3>Diagnóstico Avanzado</h3>
+
+                <h4>Verificar Conectividad:</h4>
+                <div class="code-block" data-lang="bash">
+# Probar conectividad con Cloudflare
+curl -I https://challenges.cloudflare.com/turnstile/v0/api/js/turnstile.js
+
+# Verificar resolución DNS
+nslookup challenges.cloudflare.com
+                </div>
+
+                <h4>Logs de PHP:</h4>
+                <div class="code-block" data-lang="php">
+// Habilitar logging detallado
+ini_set('log_errors', 1);
+ini_set('error_log', '/path/to/turnstile_debug.log');
+
+// En e107_config.php
+const e_DEBUG = true;
+                </div>
+
+                <h4>Verificar Base de Datos:</h4>
+                <div class="code-block" data-lang="sql">
+-- Verificar tablas del plugin
+SHOW TABLES LIKE '%turnstile%';
+
+-- Verificar intentos recientes
+SELECT * FROM e107_turnstile_attempts 
+ORDER BY attempt_time DESC LIMIT 10;
+
+-- Verificar bloqueos activos
+SELECT * FROM e107_turnstile_blocks 
+WHERE block_active = 1 AND block_end > UNIX_TIMESTAMP();
+                </div>
+            </section>
+
+            <section id="api" class="section">
+                <h2><span class="emoji">🔌</span> API y Desarrollo</h2>
+
+                <h3>Clase Principal: <code>e107turnstile</code></h3>
+
+                <h4>Métodos Públicos:</h4>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4><code>input($theme = null, $size = null)</code></h4>
+                        <p>Genera el HTML del widget de Turnstile:</p>
+                        <div class="code-block" data-lang="php">
+$turnstile = e107::getObject('e107turnstile');
+echo $turnstile->input('dark', 'compact');
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><code>verify($token = null)</code></h4>
+                        <p>Verifica un token de Turnstile:</p>
+                        <div class="code-block" data-lang="php">
+$token = $_POST['cf-turnstile-response'];
+if ($turnstile->verify($token)) {
+    // Verificación exitosa
+} else {
+    // Verificación fallida
+}
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4><code>invalid()</code></h4>
+                        <p>Retorna el mensaje de error:</p>
+                        <div class="code-block" data-lang="php">
+if (!$turnstile->verify()) {
+    echo $turnstile->invalid();
+}
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Hooks y Eventos</h3>
+
+                <h4>Hook: <code>turnstile_before_verify</code></h4>
+                <div class="code-block" data-lang="php">
+function mi_plugin_before_verify($data) {
+    // $data contiene: ip, token, user_id
+    // Retornar false cancela la verificación
+    return true;
+}
+e107::getEvent()->register('turnstile_before_verify', 'mi_plugin_before_verify');
+                </div>
+
+                <h4>Hook: <code>turnstile_after_verify</code></h4>
+                <div class="code-block" data-lang="php">
+function mi_plugin_after_verify($data) {
+    // $data contiene: ip, token, user_id, success
+    if ($data['success']) {
+        // Verificación exitosa
+    }
+}
+e107::getEvent()->register('turnstile_after_verify', 'mi_plugin_after_verify');
+                </div>
+
+                <h3>Integración con Otros Plugins</h3>
+                <div class="code-block" data-lang="php">
+// En tu plugin de contacto
+class ContactForm {
+    public function showForm() {
+        $turnstile = e107::getObject('e107turnstile');
+        
+        $form = "
+        <form method='post'>
+            <input type='text' name='name' placeholder='Nombre' required>
+            <textarea name='message' placeholder='Mensaje' required></textarea>
+            " . $turnstile->input() . "
+            <button type='submit'>Enviar</button>
+        </form>";
+        
+        return $form;
+    }
+    
+    public function processForm() {
+        $turnstile = e107::getObject('e107turnstile');
+        
+        if (!$turnstile->verify()) {
+            return $turnstile->invalid();
+        }
+        
+        // Procesar formulario...
+        return "Mensaje enviado correctamente";
+    }
+}
+                </div>
+            </section>
+
+            <section id="faq" class="section">
+                <h2><span class="emoji">❓</span> Preguntas Frecuentes</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>General</h4>
+                        <p><strong>P: ¿Es gratuito Cloudflare Turnstile?</strong></p>
+                        <p>R: Sí, Cloudflare Turnstile es gratuito para uso básico. Incluye hasta 1 millón de verificaciones por mes.</p>
+                        
+                        <p><strong>P: ¿Funciona sin JavaScript?</strong></p>
+                        <p>R: No, Turnstile requiere JavaScript habilitado en el navegador del usuario.</p>
+                        
+                        <p><strong>P: ¿Es compatible con todos los navegadores?</strong></p>
+                        <p>R: Sí, es compatible con todos los navegadores modernos (Chrome, Firefox, Safari, Edge).</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>Instalación</h4>
+                        <p><strong>P: ¿Puedo usar el plugin sin una cuenta de Cloudflare?</strong></p>
+                        <p>R: No, necesitas una cuenta gratuita de Cloudflare y registrar tu sitio en Turnstile.</p>
+                        
+                        <p><strong>P: ¿El plugin funciona en localhost?</strong></p>
+                        <p>R: Sí, puedes configurar <code>localhost</code> como dominio en Cloudflare Turnstile para desarrollo.</p>
+                        
+                        <p><strong>P: ¿Qué pasa si cambio de dominio?</strong></p>
+                        <p>R: Debes actualizar la configuración en Cloudflare y generar nuevas claves para el nuevo dominio.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>Configuración</h4>
+                        <p><strong>P: ¿Cuál es la diferencia entre los temas?</strong></p>
+                        <p>R: <strong>Light</strong>: Fondo blanco, texto negro | <strong>Dark</strong>: Fondo oscuro, texto blanco | <strong>Auto</strong>: Se adapta al tema del navegador/sistema</p>
+                        
+                        <p><strong>P: ¿Debo ocultar el CAPTCHA para miembros registrados?</strong></p>
+                        <p>R: Es recomendable para mejorar la experiencia de usuario, pero depende de tus necesidades de seguridad.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>Seguridad</h4>
+                        <p><strong>P: ¿Qué tan seguro es Turnstile comparado con reCAPTCHA?</strong></p>
+                        <p>R: Turnstile ofrece el mismo nivel de seguridad que reCAPTCHA v3, pero con mejor privacidad y experiencia de usuario.</p>
+                        
+                        <p><strong>P: ¿Los datos de mis usuarios van a Cloudflare?</strong></p>
+                        <p>R: Cloudflare procesa datos mínimos necesarios para la verificación, sin cookies de seguimiento.</p>
+                        
+                        <p><strong>P: ¿Puedo usar Turnstile con GDPR?</strong></p>
+                        <p>R: Sí, Turnstile es compatible con GDPR y no requiere consentimiento adicional de cookies.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="info-box">
+                <h3><span class="emoji">📞</span> Soporte y Recursos</h3>
+                <ul>
+                    <li><strong>Documentación Oficial Cloudflare Turnstile</strong>: <a href="https://developers.cloudflare.com/turnstile/" target="_blank">https://developers.cloudflare.com/turnstile/</a></li>
+                    <li><strong>e107 CMS</strong>: <a href="https://e107.org/" target="_blank">https://e107.org/</a></li>
+                    <li><strong>Foro e107</strong>: <a href="https://e107.org/forum" target="_blank">https://e107.org/forum</a></li>
+                </ul>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p><strong>Plugin Turnstile CAPTCHA v1.0.0</strong></p>
+            <p>Desarrollado por <strong>Jimako</strong> | <a href="https://www.e107sk.com/" target="_blank" style="color: #3498db;">https://www.e107sk.com/</a></p>
+            <p>Basado en Cloudflare Turnstile API | Compatible con e107 CMS 2.3+</p>
+            <p><em>Esta guía fue generada automáticamente - Última actualización: Enero 2025</em></p>
+        </footer>
+    </div>
+
+    <a href="#" class="back-to-top" id="backToTop">↑</a>
+
+    <script>
+        // Back to top functionality
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        document.getElementById('backToTop').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation to feature cards
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
